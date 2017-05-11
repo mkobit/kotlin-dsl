@@ -169,6 +169,32 @@ class DependencyHandlerExtensionsTest {
     }
 
     @Test
+    fun `given group, name, version, configuration, classifier, ext, and configuration name, it will create and add the dependency to the named configuration`() {
+
+        val expectedModuleMap = mapOf(
+            "group" to "g",
+            "name" to "n",
+            "version" to "v",
+            "configuration" to "config",
+            "classifier" to "cls",
+            "ext" to "x"
+        )
+
+        val dependencies = KotlinDependencyHandler(mock())
+        whenever(dependencies.add(any(), any())).thenReturn(mock())
+        val dependency: ExternalModuleDependency = mock()
+        whenever(dependencies.create(expectedModuleMap)).thenReturn(dependency)
+        whenever(dependencies.add("config", dependency)).thenReturn(dependency)
+
+        dependencies {
+            "config"("g", "n", "v", "cls", "x")
+        }
+
+        verify(dependencies.dependencies).create("g", "n", "v", "config", "cls", "x")
+        verify(dependencies.dependencies).add("config", dependency)
+    }
+
+    @Test
     fun `given configuration and dependency notation, it will add the dependency to the named configuration`() {
 
         val dependencies = DependencyHandlerScope(mock())

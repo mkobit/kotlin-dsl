@@ -42,6 +42,54 @@ class DependencyHandlerScope(val dependencies: DependencyHandler) : DependencyHa
     operator fun String.invoke(dependencyNotation: String, dependencyConfiguration: ExternalModuleDependency.() -> Unit): ExternalModuleDependency =
         dependencies.add(this, dependencyNotation, dependencyConfiguration)
 
+    /**
+     * Adds a dependency to the configuration with `this` name.
+     *
+     * @param group the group of the module to be added as a dependency.
+     * @param name the name of the module to be added as a dependency.
+     * @param version the optional version of the module to be added as a dependency.
+     * @param configuration the optional configuration of the module to be added as a dependency.
+     * @param classifier the optional classifier of the module artifact to be added as a dependency.
+     * @param ext the optional extension of the module artifact to be added as a dependency.
+     * @return The dependency.
+     *
+     * @see DependencyHandler.create
+     * @see DependencyHandler.add
+     */
+    operator fun String.invoke(
+        group: String,
+        name: String,
+        version: String? = null,
+        configuration: String? = null,
+        classifier: String? = null,
+        ext: String? = null
+    ): ExternalModuleDependency = create(group, name, version, configuration, classifier, ext).also { add(this, it) }
+
+    /**
+     * Adds a dependency to the configuration with `this` name and configures it.
+     *
+     * @param group the group of the module to be added as a dependency.
+     * @param name the name of the module to be added as a dependency.
+     * @param version the optional version of the module to be added as a dependency.
+     * @param configuration the optional configuration of the module to be added as a dependency.
+     * @param classifier the optional classifier of the module artifact to be added as a dependency.
+     * @param ext the optional extension of the module artifact to be added as a dependency.
+     * @param dependencyConfiguration expression to use to configure the dependency.
+     * @return The dependency.
+     *
+     * @see DependencyHandler.create
+     * @see DependencyHandler.add
+     */
+    operator fun String.invoke(
+        group: String,
+        name: String,
+        version: String? = null,
+        configuration: String? = null,
+        classifier: String? = null,
+        ext: String? = null,
+        dependencyConfiguration: ExternalModuleDependency.() -> Unit
+    ): ExternalModuleDependency = add(this, create(group, name, version, configuration, classifier, ext), dependencyConfiguration)
+
     operator fun <T : ModuleDependency> String.invoke(dependency: T, dependencyConfiguration: T.() -> Unit): T =
         dependencies.add(this, dependency, dependencyConfiguration)
 
