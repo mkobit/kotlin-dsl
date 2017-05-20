@@ -60,10 +60,9 @@ class DependencyHandlerScope(val dependencies: DependencyHandler) : DependencyHa
         group: String,
         name: String,
         version: String? = null,
-        configuration: String? = null,
         classifier: String? = null,
         ext: String? = null
-    ): ExternalModuleDependency = create(group, name, version, configuration, classifier, ext).also { add(this, it) }
+    ): ExternalModuleDependency = create(group, name, version, null, classifier, ext).also { add(this, it) }
 
     /**
      * Adds a dependency to the configuration with `this` name and configures it.
@@ -71,7 +70,6 @@ class DependencyHandlerScope(val dependencies: DependencyHandler) : DependencyHa
      * @param group the group of the module to be added as a dependency.
      * @param name the name of the module to be added as a dependency.
      * @param version the optional version of the module to be added as a dependency.
-     * @param configuration the optional configuration of the module to be added as a dependency.
      * @param classifier the optional classifier of the module artifact to be added as a dependency.
      * @param ext the optional extension of the module artifact to be added as a dependency.
      * @param dependencyConfiguration expression to use to configure the dependency.
@@ -84,11 +82,10 @@ class DependencyHandlerScope(val dependencies: DependencyHandler) : DependencyHa
         group: String,
         name: String,
         version: String? = null,
-        configuration: String? = null,
         classifier: String? = null,
         ext: String? = null,
         dependencyConfiguration: ExternalModuleDependency.() -> Unit
-    ): ExternalModuleDependency = add(this, create(group, name, version, configuration, classifier, ext), dependencyConfiguration)
+    ): ExternalModuleDependency = create(group, name, version, this, classifier, ext).apply(dependencyConfiguration)
 
     operator fun <T : ModuleDependency> String.invoke(dependency: T, dependencyConfiguration: T.() -> Unit): T =
         dependencies.add(this, dependency, dependencyConfiguration)

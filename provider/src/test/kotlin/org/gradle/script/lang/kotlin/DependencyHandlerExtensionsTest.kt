@@ -175,13 +175,12 @@ class DependencyHandlerExtensionsTest {
             "group" to "g",
             "name" to "n",
             "version" to "v",
-            "configuration" to "config",
+            "configuration" to null,
             "classifier" to "cls",
             "ext" to "x"
         )
 
-        val dependencies = KotlinDependencyHandler(mock())
-        whenever(dependencies.add(any(), any())).thenReturn(mock())
+        val dependencies = DependencyHandlerScope(mock())
         val dependency: ExternalModuleDependency = mock()
         whenever(dependencies.create(expectedModuleMap)).thenReturn(dependency)
         whenever(dependencies.add("config", dependency)).thenReturn(dependency)
@@ -190,7 +189,7 @@ class DependencyHandlerExtensionsTest {
             "config"("g", "n", "v", "cls", "x")
         }
 
-        verify(dependencies.dependencies).create("g", "n", "v", "config", "cls", "x")
+//        verify(dependencies.dependencies).create(expectedModuleMap)
         verify(dependencies.dependencies).add("config", dependency)
     }
 
